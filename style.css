@@ -1,0 +1,39 @@
+/* Custom Animations */
+[x-cloak] {
+  display: none !important;
+}
+
+.card-menu {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-menu:hover {
+  transform: translateY(-10px);
+}
+
+.card-menu img {
+  transition: transform 0.5s ease;
+}
+
+.card-menu:hover img {
+  transform: scale(1.1);
+}
+
+.translate-right {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Kustomisasi scrollbar agar lebih estetik */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #78716c;
+}

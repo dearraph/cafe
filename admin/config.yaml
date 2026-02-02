@@ -1,0 +1,19 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "menu"
+    label: "Daftar Menu"
+    folder: "data/menu"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Nama Menu", name: "name", widget: "string" }
+      - { label: "Harga", name: "price", widget: "number" }
+      - { label: "Stok", name: "stock", widget: "number" }
+      - { label: "Deskripsi", name: "desc", widget: "text" }
+      - { label: "Foto Menu", name: "image", widget: "image" }

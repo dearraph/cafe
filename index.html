@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dear raph.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body class="bg-stone-50 text-stone-800" x-data="cafeApp()">
+    <header
+      class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-stone-100"
+    >
+      <div
+        class="max-w-6xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4"
+      >
+        <div class="flex items-center gap-2">
+          <div
+            class="w-10 h-10 bg-amber-800 rounded-full flex items-center justify-center text-white"
+          >
+            <i class="fa fa-coffee"></i>
+          </div>
+          <h1 class="text-xl font-bold tracking-tight uppercase">
+            dear<span class="text-amber-700">raph.</span>
+          </h1>
+        </div>
+
+        <div class="flex-1 max-w-md relative">
+          <i
+            class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
+          ></i>
+          <input
+            type="text"
+            x-model="search"
+            placeholder="Cari kopi favoritmu..."
+            class="w-full pl-11 pr-4 py-2.5 bg-stone-100 border-none rounded-2xl focus:ring-2 focus:ring-amber-500 transition outline-none"
+          />
+        </div>
+
+        <button
+          @click="openCart = true"
+          class="relative p-3 bg-stone-100 rounded-xl hover:bg-stone-200 transition"
+        >
+          <i class="fa fa-shopping-bag"></i>
+          <span
+            x-show="cart.length > 0"
+            class="absolute -top-1 -right-1 bg-amber-600 text-white text-[10px] rounded-full h-5 w-5 flex items-center justify-center font-bold"
+            x-text="cart.length"
+          ></span>
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <template x-for="item in filteredMenu" :key="item.id">
+          <div
+            class="card-menu bg-white rounded-3xl p-4 border border-stone-100 shadow-sm"
+          >
+            <div
+              class="relative h-48 mb-4 overflow-hidden rounded-2xl bg-stone-100"
+            >
+              <img :src="item.image" class="w-full h-full object-cover" />
+              <div class="absolute top-3 right-3">
+                <span
+                  :class="item.stock > 0 ? 'bg-white/90' : 'bg-red-500 text-white'"
+                  class="px-3 py-1 rounded-full text-[10px] font-bold shadow-sm"
+                  x-text="item.stock > 0 ? `Stok: ${item.stock}` : 'HABIS'"
+                >
+                </span>
+              </div>
+            </div>
+            <h3 class="font-bold text-lg" x-text="item.name"></h3>
+            <p class="text-stone-400 text-xs mb-4" x-text="item.desc"></p>
+            <div class="flex items-center justify-between">
+              <span
+                class="font-black text-amber-800"
+                x-text="formatRupiah(item.price)"
+              ></span>
+              <button
+                @click="addToCart(item)"
+                :disabled="item.stock <= 0"
+                class="btn-add w-10 h-10 rounded-xl flex items-center justify-center transition"
+                :class="item.stock > 0 ? 'bg-stone-900 text-white hover:bg-amber-700' : 'bg-stone-200 text-stone-400 cursor-not-allowed'"
+              >
+                <i class="fa fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </main>
+
+    <div x-show="openCart" x-cloak class="fixed inset-0 z-50">
+      <div
+        class="absolute inset-0 bg-stone-900/40 backdrop-blur-sm"
+        @click="openCart = false"
+      ></div>
+      <div
+        class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col p-6 translate-right"
+      >
+        <div class="flex justify-between items-center mb-8 border-b pb-4">
+          <h2 class="text-xl font-bold uppercase tracking-widest">Pesanan</h2>
+          <button
+            @click="openCart = false"
+            class="text-stone-400 hover:text-black"
+          >
+            <i class="fa fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto space-y-6">
+          <template x-if="cart.length === 0">
+            <div class="text-center py-20 text-stone-400">
+              <p>Keranjang masih kosong :(</p>
+            </div>
+          </template>
+          <template x-for="(item, index) in cart" :key="index">
+            <div class="flex gap-4 items-center border-b border-stone-50 pb-4">
+              <img
+                :src="item.image"
+                class="w-16 h-16 rounded-xl object-cover"
+              />
+              <div class="flex-1">
+                <h4
+                  class="font-bold text-sm text-stone-700"
+                  x-text="item.name"
+                ></h4>
+                <p
+                  class="text-amber-700 font-bold"
+                  x-text="formatRupiah(item.price)"
+                ></p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  @click="updateQty(index, -1)"
+                  class="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center"
+                >
+                  -
+                </button>
+                <span class="font-bold" x-text="item.qty"></span>
+                <button
+                  @click="updateQty(index, 1)"
+                  class="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <div class="pt-6 border-t mt-4">
+          <div class="flex justify-between items-center mb-6 font-bold text-xl">
+            <span>Total:</span>
+            <span x-text="formatRupiah(cartTotal)"></span>
+          </div>
+          <button
+            @click="checkoutWhatsApp()"
+            class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-2xl font-bold shadow-lg transition flex items-center justify-center gap-3"
+          >
+            <i class="fab fa-whatsapp text-2xl"></i> Checkout Sekarang
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
