@@ -175,7 +175,11 @@
     </div>
     <script>
       if (window.netlifyIdentity) {
+<<<<<<< HEAD
         window.netlifyIdentity.on("init", (user) => {
+=======
+        window.netlifyIdentity.on("init", user => {
+>>>>>>> 7412f41ca912a8e4ad44e9fa9bbbbe12d2de1094
           if (!user) {
             window.netlifyIdentity.on("login", () => {
               document.location.href = "/admin/";
